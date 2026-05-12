@@ -2,7 +2,7 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 
 // Replace this with your actual API key from Google AI Studio
 // (For a production app, this should be hidden in an .env file)
-const API_KEY = "YOUR_API_KEY_HERE";
+const API_KEY = process.env.EXPO_PUBLIC_GEMINI_API_KEY;
 const genAI = new GoogleGenerativeAI(API_KEY);
 
 // We use 2.5 Flash for maximum speed and reliable JSON extraction
