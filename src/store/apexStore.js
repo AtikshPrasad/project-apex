@@ -90,10 +90,11 @@ export const useApexStore = create(
       logMeal: (p, c, f, cal) => set((state) => ({ 
           macros: { 
               ...state.macros, 
-              protein: state.macros.protein + p,
-              carbs: state.macros.carbs + c,
-              fats: state.macros.fats + f,
-              calories: state.macros.calories + cal
+              // We force Number conversion and default to 0 if something is weird
+              protein: Number(state.macros.protein || 0) + Number(p || 0),
+              carbs: Number(state.macros.carbs || 0) + Number(c || 0),
+              fats: Number(state.macros.fats || 0) + Number(f || 0),
+              calories: Number(state.macros.calories || 0) + Number(cal || 0)
           } 
       })),
 

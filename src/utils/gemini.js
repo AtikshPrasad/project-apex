@@ -1,21 +1,28 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
-// Replace this with your actual API key from Google AI Studio
-// (For a production app, this should be hidden in an .env file)
+// Pulls from local .env during dev, and pulls from EAS Secrets during cloud build
 const API_KEY = process.env.EXPO_PUBLIC_GEMINI_API_KEY;
+
 const genAI = new GoogleGenerativeAI(API_KEY);
 
-// We use 2.5 Flash for maximum speed and reliable JSON extraction
+// Gemini 2.5 Flash is highly optimized for rapid data parsing required for macro tracking
 const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
 export async function extractMacros(userInput) {
   const prompt = `
-    You are a strict nutritional calculator for a high-performance athlete.
-    The user consumed the following: "${userInput}"
+    You are a clinical nutritional analyst for a professional athlete on a strict weight-cut.
+    Input: "${userInput}"
     
-    Calculate the estimated calories, protein (g), carbs (g), fats (g), and water (ml).
-    Respond ONLY with a raw JSON object matching this exact structure, with no markdown formatting, no backticks, and no extra text:
-    {"calories": 450, "protein": 35, "carbs": 40, "fats": 15, "water": 0}
+    ESTIMATION RULES:
+    1. Use conservative, standard home-cooked Indian portion sizes (e.g., 1 Puri = 25g/125kcal).
+    2. Do NOT overestimate fat/oil unless "restaurant" or "deep fried" is specified. 
+    3. If quantities are vague, use the lower-bound average.
+    4. Current Reference Target: 10 small-moderate Puris + 1 cup Chhole should approximate ~1300-1400 kcal.
+    
+    Calculate: Calories, Protein (g), Carbs (g), Fats (g), and Water (ml).
+    
+    Respond ONLY with a raw JSON object:
+    {"calories": 0, "protein": 0, "carbs": 0, "fats": 0, "water": 0}
   `;
 
   try {
